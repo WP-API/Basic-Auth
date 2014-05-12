@@ -33,7 +33,7 @@ function json_basic_auth_handler( $user ) {
 
 	return $user->ID;
 }
-add_filter( 'determine_current_user', 'json_basic_auth_handler' );
+add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
 
 function json_basic_auth_error( $error ) {
 	// Passthrough other errors
