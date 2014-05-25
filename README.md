@@ -25,7 +25,7 @@ curl --user admin:password http://example.com/wp-json/
 ```php
 $args = array(
 	'headers' => array(
-		'Authentication' => base64_encode( $username . ':' . $password ),
+		'Authorization' => 'Basic ' . base64_encode( $username . ':' . $password ),
 	),
 );
 ```
