@@ -16,7 +16,7 @@ function json_basic_auth_handler( $user ) {
 
 	// Check that we're trying to authenticate
 	if ( !isset( $_SERVER['PHP_AUTH_USER'] ) ) {
-		return false;
+		return $user;
 	}
 
 	$username = $_SERVER['PHP_AUTH_USER'];
@@ -43,9 +43,9 @@ function json_basic_auth_error( $error ) {
 
 	global $wp_json_basic_auth_error;
 
-	// If we don't have an error, passthrough the null
+	// If we don't have an error, we're good!
 	if ( empty( $wp_json_basic_auth_error ) ) {
-		return $error;
+		return true;
 	}
 
 	// We have an error! Return it.
