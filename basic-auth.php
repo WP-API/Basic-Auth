@@ -9,6 +9,10 @@
  */
 
 function json_basic_auth_handler( $user ) {
+	global $wp_json_basic_auth_error;
+
+	$wp_json_basic_auth_error = null;
+
 	// Don't authenticate twice
 	if ( ! empty( $user ) ) {
 		return $user;
@@ -22,14 +26,14 @@ function json_basic_auth_handler( $user ) {
 	$username = $_SERVER['PHP_AUTH_USER'];
 	$password = $_SERVER['PHP_AUTH_PW'];
 
-	global $wp_json_basic_auth_error;
-
 	$user = wp_authenticate( $username, $password );
 
 	if ( is_wp_error( $user ) ) {
 		$wp_json_basic_auth_error = $user;
 		return null;
 	}
+
+	$wp_json_basic_auth_error = true;
 
 	return $user->ID;
 }
@@ -43,12 +47,6 @@ function json_basic_auth_error( $error ) {
 
 	global $wp_json_basic_auth_error;
 
-	// If we don't have an error, we're good!
-	if ( empty( $wp_json_basic_auth_error ) ) {
-		return true;
-	}
-
-	// We have an error! Return it.
 	return $wp_json_basic_auth_error;
 }
 add_filter( 'json_authentication_errors', 'json_basic_auth_error' );
