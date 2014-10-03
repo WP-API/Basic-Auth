@@ -26,7 +26,17 @@ function json_basic_auth_handler( $user ) {
 	$username = $_SERVER['PHP_AUTH_USER'];
 	$password = $_SERVER['PHP_AUTH_PW'];
 
+	/**
+	 * In multi-site, wp_authenticate_spam_check filter is run on authentication. This filter calls
+	 * get_currentuserinfo which in turn calls the determine_current_user filter. This leads to infinite
+	 * recursion and a stack overflow unless the current function is removed from the determine_current_user
+	 * filter during authentication.
+	 */
+	remove_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
+
 	$user = wp_authenticate( $username, $password );
+
+	add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
 
 	if ( is_wp_error( $user ) ) {
 		$wp_json_basic_auth_error = $user;
