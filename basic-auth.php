@@ -19,12 +19,15 @@ function json_basic_auth_handler( $user ) {
 	}
 
 	// Check that we're trying to authenticate
-	if ( !isset( $_SERVER['PHP_AUTH_USER'] ) ) {
+	if ( isset( $_SERVER['PHP_AUTH_USER'] ) && isset( $_SERVER['PHP_AUTH_PW'])) {
+		$username = $_SERVER['PHP_AUTH_USER'];
+		$password = $_SERVER['PHP_AUTH_PW'];
+	} elseif (isset($_REQUEST['username']) && isset($_REQUEST['password'])) {
+		$username = $_REQUEST['username'];
+		$password = $_REQUEST['password'];
+	} else {
 		return $user;
 	}
-
-	$username = $_SERVER['PHP_AUTH_USER'];
-	$password = $_SERVER['PHP_AUTH_PW'];
 
 	/**
 	 * In multi-site, wp_authenticate_spam_check filter is run on authentication. This filter calls
