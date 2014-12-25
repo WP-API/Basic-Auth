@@ -23,8 +23,15 @@ function json_basic_auth_handler( $user ) {
 		$username = $_SERVER['PHP_AUTH_USER'];
 		$password = $_SERVER['PHP_AUTH_PW'];
 	} elseif (isset($_REQUEST['username']) && isset($_REQUEST['password'])) {
+
 		$username = $_REQUEST['username'];
 		$password = $_REQUEST['password'];
+
+		if (is_email($_REQUEST['username'])) {
+			$user = get_user_by( 'email', $_REQUEST['username'] );
+			$username = $user->user_login;
+		}
+		
 	} else {
 		return $user;
 	}
@@ -63,3 +70,21 @@ function json_basic_auth_error( $error ) {
 	return $wp_json_basic_auth_error;
 }
 add_filter( 'json_authentication_errors', 'json_basic_auth_error' );
+
+
+
+ 
+// function wp_authenticate_by_email( $username ) {
+
+// 	wp_die('die' );
+
+//     $user = get_user_by( 'email', $username );
+
+//     if ( empty( $user ) ) {
+//         return;
+//     }
+
+//     return $user->user_login;
+// }
+
+// add_action( 'wp_authenticate', 'wp_authenticate_by_email' );
