@@ -30,5 +30,12 @@ $args = array(
 );
 ```
 
+### [HTTPie][httpie]
+
+```sh
+http --a admin:password http://example.com/wp-json/
+```
+
 [oauth]: https://github.com/WP-API/OAuth1
 [RFC2617]: https://tools.ietf.org/html/rfc2617
+[httpie]: https://github.com/jakubroztocil/httpie
