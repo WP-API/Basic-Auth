@@ -13,6 +13,11 @@ function json_basic_auth_handler( $user ) {
 
 	$wp_json_basic_auth_error = null;
 
+	// Skip authentication for non-api requests
+	if (false === strpos($_SERVER['REQUEST_URI'], 'wp-json')) {
+		return $user;
+	}
+
 	// Don't authenticate twice
 	if ( ! empty( $user ) ) {
 		return $user;
@@ -20,7 +25,9 @@ function json_basic_auth_handler( $user ) {
 
 	// Check that we're trying to authenticate
 	if ( !isset( $_SERVER['PHP_AUTH_USER'] ) ) {
-		return $user;
+		header('WWW-Authenticate: Basic realm="Authentication needed"');
+		header('HTTP/1.0 401 Unauthorized');
+		exit(0);
 	}
 
 	$username = $_SERVER['PHP_AUTH_USER'];
@@ -39,8 +46,9 @@ function json_basic_auth_handler( $user ) {
 	add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
 
 	if ( is_wp_error( $user ) ) {
-		$wp_json_basic_auth_error = $user;
-		return null;
+		header('WWW-Authenticate: Basic realm="Authentication needed"');
+		header('HTTP/1.0 401 Unauthorized');
+		exit(0);
 	}
 
 	$wp_json_basic_auth_error = true;
