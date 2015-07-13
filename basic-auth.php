@@ -13,6 +13,11 @@ function json_basic_auth_handler( $user ) {
 
 	$wp_json_basic_auth_error = null;
 
+	// Skip authentication for non-api requests
+	if (false === strpos($_SERVER['REQUEST_URI'], 'wp-json')) {
+		return $user;
+	}
+
 	// Don't authenticate twice
 	if ( ! empty( $user ) ) {
 		return $user;
