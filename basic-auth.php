@@ -24,7 +24,7 @@ function json_basic_auth_handler( $user ) {
 	}
 
 	// Check that we're trying to authenticate
-	if ( !isset( $_SERVER['PHP_AUTH_USER'] ) ) {
+	if ( !isset( $_SERVER['PHP_AUTH_USER'] ) || $_SERVER['PHP_AUTH_USER'] === '' ) {
 		return $user;
 	}
 
