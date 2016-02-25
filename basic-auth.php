@@ -44,10 +44,15 @@ function json_basic_auth_handler( $user ) {
 	}
 
 	$wp_json_basic_auth_error = true;
-
+	//if we found a user, remove regular cookie filters because
+	//they're just going to overwrite what we've found
+	if( $user->ID ){
+		remove_filter( 'determine_current_user', 'wp_validate_auth_cookie' );
+		remove_filter( 'determine_current_user', 'wp_validate_logged_in_cookie', 20 );
+	}
 	return $user->ID;
 }
-add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
+add_filter( 'determine_current_user', 'json_basic_auth_handler', 5 );
 
 function json_basic_auth_error( $error ) {
 	// Passthrough other errors
@@ -60,3 +65,4 @@ function json_basic_auth_error( $error ) {
 	return $wp_json_basic_auth_error;
 }
 add_filter( 'json_authentication_errors', 'json_basic_auth_error' );
+add_filter( 'rest_authentication_errors', 'json_basic_auth_error' );
