@@ -60,3 +60,4 @@ function json_basic_auth_error( $error ) {
 	return $wp_json_basic_auth_error;
 }
 add_filter( 'json_authentication_errors', 'json_basic_auth_error' );
+add_filter( 'rest_authentication_errors', 'json_basic_auth_error' );
