@@ -34,7 +34,19 @@ function json_basic_auth_handler( $user ) {
 	 */
 	remove_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
 
-	$user = wp_authenticate( $username, $password );
+	$user = get_user_by('login', $username);
+
+	if ( !$user ) {
+		$user = get_user_by('email', $username);
+	}
+
+	if ( !$user ) {
+		return null;
+	}
+
+	if ( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
+		return null;
+	}
 
 	add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
 
