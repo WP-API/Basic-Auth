@@ -17,9 +17,14 @@ function json_basic_auth_handler( $user ) {
 	if ( ! empty( $user ) ) {
 		return $user;
 	}
+	
+	// Support PHP FastCGI Redirect
+	if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+		list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['REDIRECT_HTTP_AUTHORIZATION'], 6)));
+	}
 
 	// Check that we're trying to authenticate
-	if ( !isset( $_SERVER['PHP_AUTH_USER'] ) ) {
+	if ( !isset( $_SERVER['PHP_AUTH_USER'] ) || $_SERVER['PHP_AUTH_USER'] === '' ) {
 		return $user;
 	}
 
