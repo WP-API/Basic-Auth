@@ -38,8 +38,11 @@ function json_basic_auth_handler( $user ) {
 
 	add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
 
-	if ( is_wp_error( $user ) ) {
+	if ( is_wp_error( $user )) {
 		$wp_json_basic_auth_error = $user;
+		return null;
+	}elseif(is_ssl()===false){
+		$wp_json_basic_auth_error = __('Connection is not hover SSL');
 		return null;
 	}
 
